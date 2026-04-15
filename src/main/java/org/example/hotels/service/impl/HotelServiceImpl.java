@@ -44,7 +44,7 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<HotelShortDto> searchHotels(String name, String brand, String city, String country, String amenity) {
+    public List<HotelShortDto> searchHotels(String name, String brand, String city, String country, List<String> amenities) {
         Specification<Hotel> spec = Specification.unrestricted();
         if (name != null && !name.isBlank()) {
             spec = spec.and(HotelSpecifications.hasName(name));
@@ -58,8 +58,8 @@ public class HotelServiceImpl implements HotelService {
         if (country != null && !country.isBlank()) {
             spec = spec.and(HotelSpecifications.hasCountry(country));
         }
-        if (amenity != null && !amenity.isBlank()) {
-            spec = spec.and(HotelSpecifications.hasAmenity(amenity));
+        if (amenities != null && !amenities.isEmpty()) {
+            spec = spec.and(HotelSpecifications.hasAmenities(amenities));
         }
         return hotelRepository.findAll(spec).stream()
                 .map(hotelMapper::toShortDto)

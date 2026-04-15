@@ -12,7 +12,7 @@ public interface HotelService {
 
     HotelDetailsDto getHotelById(Long id);
 
-    List<HotelShortDto> searchHotels(String name, String brand, String city, String country, String amenity);
+    List<HotelShortDto> searchHotels(String name, String brand, String city, String country, List<String> amenities);
 
     HotelShortDto createHotel(HotelDetailsDto dto);
 
