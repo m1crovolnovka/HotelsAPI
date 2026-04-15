@@ -1,8 +1,11 @@
 package org.example.hotels.specification;
 
+import jakarta.persistence.criteria.Predicate;
 import org.example.hotels.entity.Hotel;
 import org.springframework.data.jpa.domain.Specification;
 import jakarta.persistence.criteria.Join;
+
+import java.util.List;
 
 public class HotelSpecifications {
 
@@ -23,10 +26,16 @@ public class HotelSpecifications {
         return (root, query, cb) -> cb.equal(root.get("address").get("country"), country);
     }
 
-    public static Specification<Hotel> hasAmenity(String amenity) {
+    public static Specification<Hotel> hasAmenities(List<String> amenities) {
         return (root, query, cb) -> {
-            Join<Hotel, String> amenitiesJoin = root.join("amenities");
-            return cb.equal(amenitiesJoin, amenity);
+            if (amenities == null || amenities.isEmpty()) {
+                return null;
+            }
+            var predicates = amenities.stream()
+                    .map(amenity -> cb.isMember(amenity, root.get("amenities")))
+                    .toArray(Predicate[]::new);
+
+            return cb.and(predicates);
         };
     }
 }
